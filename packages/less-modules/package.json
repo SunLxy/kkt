@@ -1,6 +1,6 @@
 {
   "name": "@kkt/less-modules",
-  "version": "7.1.2",
+  "version": "7.2.3",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "description": "Support for regular less files and *.module.less files.",
@@ -17,11 +17,14 @@
     "lib",
     "src"
   ],
+  "scripts": {
+    "watch": "tsbb watch --no-esm"
+  },
   "dependencies": {
     "less": "^4.1.2",
     "less-loader": "^10.2.0"
   },
   "devDependencies": {
-    "kkt": "7.1.7"
+    "kkt": "^7.2.3"
   }
 }

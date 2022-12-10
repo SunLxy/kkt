@@ -11,34 +11,33 @@ jobs:
   windows:
     runs-on: windows-2019
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 16
 
       - name: Look Changelog
-        uses: jaywcjlove/changelog-generator@v1.5.0
+        uses: jaywcjlove/changelog-generator@v1.5.7
         with:
           filter-author: (小弟调调™|Renovate Bot|renovate-bot)
           filter: '[R|r]elease[d]\s+[v|V]\d(\.\d+){0,2}'
 
-      - run: npm install --unsafe-perm
-      - run: npm run hoist
+      - run: npm install
       - run: npm run kkt:build
       - run: npm run lib:build
 
   build:
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 16
 
-      - run: npm install --unsafe-perm
-      - run: npm run hoist
+      - run: npm install
       - run: npm run kkt:build
       - run: npm run lib:build
+      - run: npm install
 
       - run: mkdir -p build
 
@@ -194,7 +193,7 @@ jobs:
 
       - name: get tag version
         id: tag_version
-        uses: jaywcjlove/changelog-generator@v1.5.3
+        uses: jaywcjlove/changelog-generator@v1.5.7
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
@@ -212,7 +211,7 @@ jobs:
 
       - name: Generate Changelog
         id: changelog
-        uses: jaywcjlove/changelog-generator@v1.5.3
+        uses: jaywcjlove/changelog-generator@v1.5.7
         if: steps.create_tag.outputs.successful
         with:
           head-ref: ${{ steps.create_tag.outputs.version }}

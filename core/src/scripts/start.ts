@@ -8,7 +8,7 @@ import redirectServedPath from 'react-dev-utils/redirectServedPathMiddleware';
 import clearConsole from 'react-dev-utils/clearConsole';
 import noopServiceWorkerMiddleware from 'react-dev-utils/noopServiceWorkerMiddleware';
 import { KKTRC, DevServerConfigFunction, WebpackConfiguration, loaderConf } from '../utils/loaderConf';
-import { reactScripts, isWebpackFactory, proxySetup, configOverrides } from '../utils/path';
+import { reactScripts, isWebpackFactory, proxySetup, getConfPath } from '../utils/path';
 import { overridePaths } from '../overrides/paths';
 import { overridesOpenBrowser } from '../overrides/openBrowser';
 import { overridesClearConsole } from '../overrides/clearConsole';
@@ -31,7 +31,7 @@ export default async function start(argvs: StartArgs) {
     const createWebpackConfig: (env: string) => Configuration = require(webpackConfigPath);
     const createDevServerConfig: DevServerConfigFunction = require(devServerConfigPath);
     require('react-scripts/config/env');
-    const kktrc: KKTRC = await loaderConf(configOverrides);
+    const kktrc: KKTRC = await loaderConf(getConfPath(argvs.configName));
     await overridesClearConsole(argvs);
     await overridesOpenBrowser(argvs);
 
@@ -95,10 +95,11 @@ export default async function start(argvs: StartArgs) {
       if (kktrc && kktrc.devServer && typeof kktrc.devServer === 'function') {
         return kktrc.devServer({ ...overrideDevServerConfig, ...serverConf }, { ...argvs, paths });
       } else {
-        serverConf = { ...overrideDevServerConfig, ...serverConf };
+        serverConf = { ...serverConf, ...overrideDevServerConfig };
       }
       delete serverConf.onAfterSetupMiddleware;
       delete serverConf.onBeforeSetupMiddleware;
+      const setupMiddlewares = overrideDevServerConfig.setupMiddlewares;
       serverConf.setupMiddlewares = (middlewares, devServer) => {
         // Keep `evalSourceMapMiddleware`
         // middlewares before `redirectServedPath` otherwise will not have any effect
@@ -122,6 +123,9 @@ export default async function start(argvs: StartArgs) {
         // it used the same host and port.
         // https://github.com/facebook/create-react-app/issues/2272#issuecomment-302832432
         devServer.app.use(noopServiceWorkerMiddleware(paths.publicUrlOrPath));
+        if (setupMiddlewares) {
+          return setupMiddlewares(middlewares, devServer);
+        }
         return middlewares;
       };
       return serverConf;
