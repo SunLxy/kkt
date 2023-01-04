@@ -236,25 +236,35 @@ export const proxySetup = (app: express.Application): MockerAPIOptions => {
 ```bash
 Usage: kkt [start|build|test] [--help|h]
 
-Displays help information.
+  Displays help information.
 
 Options:
 
-  --version, -v Show version number
-  --help, -h Displays help information.
-  --app-src, Specify the entry directory.
-  --no-open-browser, Do not open in browser.
-  --no-clear-console, Do not clear the command line information.
+  --version, -v           Show version number
+  --help, -h              Displays help information.
+  --app-src               Specify the entry directory.
+  --docs                  Static asset preview in package(Dev mode works).
+  --no-open-browser       Do not open in browser.
+  --no-clear-console      Do not clear the command line information.
 
 Example:
 
 $ kkt build
 $ kkt build --app-src ./website
+$ kkt test
+$ kkt test --env=jsdom
+$ kkt test --env=jsdom --coverage
 $ kkt start
 $ kkt start --no-open-browser
+$ kkt start --watch
 $ kkt start --no-clear-console
 $ kkt start --app-src ./website
-$ kkt test
+# Static asset preview in "@uiw/doc" package.
+# Default preview: http://localhost:3000/_doc/
+$ kkt start --docs @uiw/doc/web
+# Specify a static website route "_uiw/doc"
+# Default preview: http://localhost:3000/_uiw/doc
+$ kkt start --docs @uiw/doc/web:_uiw/doc
 ```
 
 ### Home Page
